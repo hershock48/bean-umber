@@ -58,28 +58,20 @@ export default function ImpactFinancialSummary() {
 
           {/* Financial Section */}
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Financials</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Financial Stewardship</h2>
             <div className="bg-gray-50 p-8 rounded-lg border border-gray-200 mb-6">
               <div className="mb-4">
-                <div className="text-3xl font-bold text-gray-900 mb-2">100%</div>
-                <div className="text-gray-700 font-medium">Program allocation</div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">96.7%</div>
+                <div className="text-gray-700 font-medium">Program allocation (2025)</div>
               </div>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              All donations go directly to programs. Administrative and overhead costs are covered separately through grants and operational support, ensuring that every dollar donated reaches the communities we serve.
+              In 2025, 96.7% of total expenditures directly supported community programs, reflecting disciplined financial management and maximum impact.
+            </p>
+            <p className="text-gray-700 leading-relaxed mt-4">
+              Administrative and operational functions remain intentionally lean, ensuring strong governance, compliance, reporting, and long-term sustainability as the organization scales across post-conflict regions.
             </p>
           </section>
-
-          {/* Download Button */}
-          <div className="pt-8 border-t border-gray-200">
-            <a
-              href="/reports/2025-impact-financial-summary.pdf"
-              download="2025-Impact-Financial-Summary.pdf"
-              className="inline-block px-8 py-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors font-medium"
-            >
-              Download PDF
-            </a>
-          </div>
         </div>
       </main>
 

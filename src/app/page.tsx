@@ -1,6 +1,7 @@
 import { Logo } from '@/components/Logo';
 import { CountUpNumber } from '@/components/CountUpNumber';
 import { StickyDonateButton } from '@/components/StickyDonateButton';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -49,25 +50,29 @@ export default function Home() {
       {/* Hero Section */}
       <section id="top" className="relative pt-20 pb-32 px-6 overflow-hidden">
         {/* Background image with overlay */}
-        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80)' }}>
+        <div className="absolute inset-0 z-0">
+        <Image
+            src="/images/homepage/hero-community-group.jpg"
+            alt="Wide community group photo in front of painted building"
+            fill
+            className="object-cover"
+          priority
+        />
         </div>
-        <div className="absolute inset-0 z-0 bg-black/50"></div>
+        <div className="absolute inset-0 z-0 bg-black/65"></div>
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="max-w-3xl">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
               Rebuilding post-war societies through locally-led systems change.
           </h1>
-            <p className="text-lg text-white/90 mb-6 leading-relaxed">
-              When Grace, a teacher in Northern Uganda, needed supplies for her classroom, she didn't wait for outside help—she worked with community leaders to create a system that sustains itself.
+            <p className="text-lg text-white/90 mb-6 leading-[1.8]">
+              Be A Number partners with local leadership in Northern Uganda to design and operate integrated community systems — healthcare, education, workforce development, and local economic infrastructure — that move communities from survival to long-term stability.
             </p>
-            <p className="text-lg text-white/90 mb-6 leading-relaxed">
-              Already impacting 700+ patients, 60 women, and 15 students in Northern Uganda.
+            <p className="text-lg text-white/90 mb-6 leading-[1.8]">
+              In 2025 alone, our work reached 700+ patients, 60 women, and 15 students, demonstrating how durable institutions, when owned and led by the community, generate measurable outcomes and lasting transformation.
             </p>
-            <p className="text-xl text-white mb-5 leading-relaxed">
-              We build sustainable community systems—health, education, workforce, and economic infrastructure—in Northern Uganda. Our model is designed to replicate across post-conflict regions.
-            </p>
-            <p className="text-white/95 mb-10 leading-relaxed">
-              Each system generates earned income to sustain operations long-term. Communities own and operate all programs, ensuring lasting impact beyond initial investment.
+            <p className="text-lg text-white/90 mb-10 leading-[1.8]">
+              Each system is built to sustain itself through earned income and local ownership, ensuring long-term operations beyond initial investment and enabling replication across post-conflict regions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <a
@@ -96,7 +101,7 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <span>100% Program Allocation</span>
+                <span>96.7% Program Allocation</span>
               </div>
               <div className="flex items-center gap-2 text-white text-sm font-medium">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,9 +165,14 @@ export default function Home() {
               </div>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden h-full">
-                <div className="aspect-[3/4] bg-gray-200 bg-cover bg-center" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&q=80)' }}>
-                  {/* Placeholder for community photo */}
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden h-full px-4 py-4">
+                <div className="relative aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/impact/mother-child-portrait.jpg"
+                    alt="Portrait of mother and child inside home with jerrycans"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -234,6 +244,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">The Model</h2>
           <p className="text-gray-700 mb-12 max-w-3xl leading-relaxed">Four integrated systems work together to create sustainable, long-term change. Each system generates measurable outcomes and can operate independently.</p>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-8 border border-gray-200 rounded-lg">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Health</h3>
@@ -274,6 +285,7 @@ export default function Home() {
           <p className="text-gray-700 mb-12 max-w-3xl leading-relaxed">
             The people of Northern Uganda are building their own future. Community leaders set priorities, local staff run operations, and families participate in programs that will sustain generations to come.
           </p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-lg border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Community Leaders</h3>
@@ -330,6 +342,18 @@ export default function Home() {
           <p className="text-gray-700 mb-12 max-w-3xl leading-relaxed">
             We partner with established institutions to ensure program quality and replicability. Academic partnerships provide technical expertise and program validation. Local organizations implement programs with community leadership. These partnerships demonstrate the model's ability to scale across regions.
           </p>
+          
+          {/* Primary Image */}
+          <div className="mb-12 w-full max-w-4xl mx-auto">
+            <div className="relative w-full aspect-[16/10] bg-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src="/images/partnerships/sewing-classroom-training.jpg"
+                alt="Wide sewing classroom training scene"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
           
           {/* Partner Logos */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
@@ -419,7 +443,7 @@ export default function Home() {
           <div className="bg-gray-900 text-white p-12 rounded-lg">
             <h2 className="text-3xl font-bold mb-4 text-center">Support Our Work</h2>
             <p className="text-gray-200 mb-12 max-w-2xl mx-auto text-center leading-relaxed">
-              Your investment supports sustainable systems that generate measurable, long-term outcomes. 100% of donations go directly to programs. We report on all outcomes and financials annually.
+              Your investment supports sustainable systems that generate measurable, long-term outcomes. 96–97% of all funding directly supports programs and community impact. We operate with a lean administrative structure and report all outcomes and financials annually.
             </p>
             
             {/* Donation Tiers */}
@@ -462,8 +486,8 @@ export default function Home() {
                   <div>You receive an immediate tax-deductible receipt via email.</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold mb-2 text-white">2. Direct to Programs</div>
-                  <div>100% of your donation goes directly to health, education, and workforce programs in Northern Uganda.</div>
+                  <div className="font-semibold mb-2 text-white">2. Program Impact</div>
+                  <div>The vast majority of your contribution directly supports health, education, workforce development, and economic programs in Northern Uganda, with minimal overhead to sustain long-term operations and accountability.</div>
                 </div>
                 <div className="text-center">
                   <div className="font-semibold mb-2 text-white">3. Impact Updates</div>
@@ -479,7 +503,7 @@ export default function Home() {
       <section className="py-12 px-6 bg-white border-t border-gray-200">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-600 text-sm">
-            Founded by <a href="/story" className="text-gray-900 hover:text-gray-700 underline font-medium">Kevin Hershock</a> after 15+ years of community work in Northern Uganda
+            Founded by <a href="/founder" className="text-gray-900 hover:text-gray-700 underline font-medium">Kevin Hershock</a> after 15+ years of community work in Northern Uganda
           </p>
         </div>
       </section>
@@ -514,7 +538,7 @@ export default function Home() {
               <p className="text-gray-600 text-sm mb-2">
                 EIN: 93-1948872
               </p>
-              <a href="/reports" className="text-gray-600 text-sm hover:text-gray-900 underline">
+              <a href="/governance" className="text-gray-600 text-sm hover:text-gray-900 underline">
                 Governance & Financials
               </a>
             </div>

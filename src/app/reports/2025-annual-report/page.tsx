@@ -112,17 +112,6 @@ export default function AnnualReport() {
               Our 5-year goal remains: reach 10,000+ lives and replicate this model across additional post-conflict regions where community leadership and local partnerships are in place.
             </p>
           </section>
-
-          {/* Download Button */}
-          <div className="pt-8 border-t border-gray-200">
-            <a
-              href="/reports/2025-annual-report.pdf"
-              download="2025-Annual-Report.pdf"
-              className="inline-block px-8 py-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors font-medium"
-            >
-              Download PDF
-            </a>
-          </div>
         </div>
       </main>
 
