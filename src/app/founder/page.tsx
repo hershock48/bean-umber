@@ -61,7 +61,7 @@ export default function Founder() {
             </p>
 
             {/* Secondary Image - Mid-page */}
-            <div className="my-12 w-full max-w-2xl mx-auto">
+            <div className="my-12 w-full max-w-lg mx-auto">
               <div className="relative w-full aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden">
                 <Image
                   src="/images/founder/secondary-woman-sewing.jpg"

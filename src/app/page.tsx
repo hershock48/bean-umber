@@ -1,6 +1,7 @@
 import { Logo } from '@/components/Logo';
 import { CountUpNumber } from '@/components/CountUpNumber';
 import { StickyDonateButton } from '@/components/StickyDonateButton';
+import { DonationSection } from '@/components/DonationSection';
 import Image from 'next/image';
 
 export default function Home() {
@@ -24,9 +25,6 @@ export default function Home() {
               </a>
               <a href="#partnerships" className="text-gray-700 hover:text-gray-900 transition-colors">
                 Partnerships
-              </a>
-              <a href="#reports" className="text-gray-700 hover:text-gray-900 transition-colors">
-                Reports
               </a>
               <a
                 href="#donate"
@@ -225,16 +223,28 @@ export default function Home() {
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Why Be A Number</h2>
-          <div className="max-w-3xl">
-            <p className="text-gray-700 text-lg leading-relaxed mb-4">
-              Unlike traditional aid programs, we build systems that sustain themselves. Communities own and operate all programs long-term.
-            </p>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Traditional aid often creates dependency: communities wait for outside funding, programs end when donations stop, and local leadership is sidelined. Our model works differently. We invest in infrastructure, training, and income-generating activities that create earned revenue. Programs become self-sustaining, ensuring operations continue without ongoing external funding. Communities set priorities, local staff run operations, and the systems we build become permanent assets.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              This model can be replicated in any post-conflict region where community leadership and local partnerships are in place.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                Unlike traditional aid programs, we build systems that sustain themselves. Communities own and operate all programs long-term.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Traditional aid often creates dependency: communities wait for outside funding, programs end when donations stop, and local leadership is sidelined. Our model works differently. We invest in infrastructure, training, and income-generating activities that create earned revenue. Programs become self-sustaining, ensuring operations continue without ongoing external funding. Communities set priorities, local staff run operations, and the systems we build become permanent assets.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                This model can be replicated in any post-conflict region where community leadership and local partnerships are in place.
+              </p>
+            </div>
+            <div className="w-full">
+              <div className="relative w-full aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden">
+                <Image
+                  src="/images/governance/planning-notebook.jpg"
+                  alt="Woman with clothesline in Northern Uganda"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -285,6 +295,18 @@ export default function Home() {
           <p className="text-gray-700 mb-12 max-w-3xl leading-relaxed">
             The people of Northern Uganda are building their own future. Community leaders set priorities, local staff run operations, and families participate in programs that will sustain generations to come.
           </p>
+
+          {/* Community Image */}
+          <div className="mb-12 w-full max-w-2xl mx-auto">
+            <div className="relative w-full aspect-[16/10] bg-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src="/images/partnerships/sewing-classroom-training.jpg"
+                alt="Wide sewing classroom training scene"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-lg border border-gray-200">
@@ -340,34 +362,47 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Partnerships</h2>
           <p className="text-gray-700 mb-12 max-w-3xl leading-relaxed">
-            We partner with established institutions to ensure program quality and replicability. Academic partnerships provide technical expertise and program validation. Local organizations implement programs with community leadership. These partnerships demonstrate the model's ability to scale across regions.
+            We partner with established institutions to ensure program quality, accountability, and replicability. Academic partnerships provide technical expertise and program validation. Local organizations implement programs with community leadership. These partnerships demonstrate the model's ability to scale across regions.
           </p>
           
           {/* Primary Image */}
-          <div className="mb-12 w-full max-w-4xl mx-auto">
+          <div className="mb-12 w-full max-w-2xl mx-auto">
             <div className="relative w-full aspect-[16/10] bg-gray-200 rounded-lg overflow-hidden">
               <Image
-                src="/images/partnerships/sewing-classroom-training.jpg"
-                alt="Wide sewing classroom training scene"
+                src="/images/impact-page/secondary-image.jpg"
+                alt="Kevin Hershock with community members carrying jerrycans"
                 fill
                 className="object-cover"
               />
             </div>
           </div>
           
-          {/* Partner Logos */}
+          {/* Key Partners & Collaborators */}
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Key Partners & Collaborators</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
             <div className="p-8 border border-gray-200 rounded-lg bg-white">
               <div className="h-16 mb-4 flex items-center">
-                <div className="text-2xl font-bold text-gray-700">University of Worcester</div>
+                <div className="text-2xl font-bold text-gray-700">University of Worcester (UK)</div>
               </div>
-              <p className="text-gray-700">Cohorts planned for 2026 (4 groups)</p>
+              <p className="text-gray-700">Academic partner; four student cohorts scheduled for 2026</p>
             </div>
             <div className="p-8 border border-gray-200 rounded-lg bg-white">
               <div className="h-16 mb-4 flex items-center">
-                <div className="text-xl font-semibold text-gray-700">YDO</div>
+                <div className="text-xl font-semibold text-gray-700">Youth Development Organization (YDO), Uganda</div>
               </div>
-              <p className="text-gray-700">Local implementing partner</p>
+              <p className="text-gray-700">Core local implementing partner in Northern Uganda</p>
+            </div>
+            <div className="p-8 border border-gray-200 rounded-lg bg-white">
+              <div className="h-16 mb-4 flex items-center">
+                <div className="text-xl font-semibold text-gray-700">Rotary Club of Marshall (USA)</div>
+              </div>
+              <p className="text-gray-700">Longstanding civic partner supporting health, education, and community development initiatives</p>
+            </div>
+            <div className="p-8 border border-gray-200 rounded-lg bg-white">
+              <div className="h-16 mb-4 flex items-center">
+                <div className="text-xl font-semibold text-gray-700">Rotary Club of Gulu (Uganda)</div>
+              </div>
+              <p className="text-gray-700">Local institutional partner advancing health, education, and post-conflict community development</p>
             </div>
           </div>
 
@@ -377,34 +412,6 @@ export default function Home() {
               "This partnership has transformed our community. Our children now have access to education, our families have healthcare, and our people have skills to build their futures. We are building something that will last for generations."
             </p>
             <p className="text-gray-600 font-medium">— Community Leader, Northern Uganda</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Reports */}
-      <section id="reports" className="py-24 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Reports</h2>
-          <p className="text-gray-700 mb-12 leading-relaxed text-sm">All reports independently reviewed and publicly available.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a
-              href="/reports/2025-impact-financial-summary"
-              className="p-8 bg-white border-2 border-gray-200 rounded-lg hover:border-gray-900 transition-colors group"
-            >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-700">
-                2025 Impact & Financial Summary
-              </h3>
-              <p className="text-gray-600 text-sm group-hover:text-gray-500">1-page overview (impact + financials)</p>
-            </a>
-            <a
-              href="/reports/2025-annual-report"
-              className="p-8 bg-white border-2 border-gray-200 rounded-lg hover:border-gray-900 transition-colors group"
-            >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-700">
-                2025 Annual Report
-              </h3>
-              <p className="text-gray-600 text-sm group-hover:text-gray-500">Full narrative report</p>
-            </a>
           </div>
         </div>
       </section>
@@ -438,66 +445,7 @@ export default function Home() {
       </section>
 
       {/* Donate CTA */}
-      <section id="donate" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-gray-900 text-white p-12 rounded-lg">
-            <h2 className="text-3xl font-bold mb-4 text-center">Support Our Work</h2>
-            <p className="text-gray-200 mb-12 max-w-2xl mx-auto text-center leading-relaxed">
-              Your investment supports sustainable systems that generate measurable, long-term outcomes. 96–97% of all funding directly supports programs and community impact. We operate with a lean administrative structure and report all outcomes and financials annually.
-            </p>
-            
-            {/* Donation Tiers */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-md p-4 text-center transition-colors">
-                <div className="text-2xl font-bold mb-2">$25</div>
-                <div className="text-sm text-gray-200 leading-snug">Covers school supplies for 5 students for one term</div>
-              </button>
-              <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-md p-4 text-center transition-colors">
-                <div className="text-2xl font-bold mb-2">$50</div>
-                <div className="text-sm text-gray-200 leading-snug">Covers malaria treatment for 3 families</div>
-              </button>
-              <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-md p-4 text-center transition-colors">
-                <div className="text-2xl font-bold mb-2">$100</div>
-                <div className="text-sm text-gray-200 leading-snug">Funds complete vocational training for 1 person</div>
-              </button>
-              <button className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-md p-4 text-center transition-colors">
-                <div className="text-2xl font-bold mb-2">$250</div>
-                <div className="text-sm text-gray-200 leading-snug">Covers one month's salary for a local teacher</div>
-              </button>
-            </div>
-            
-            <p className="text-center text-gray-300 text-sm mb-8">You may also choose your own amount.</p>
-            
-            <div className="text-center mb-8">
-              <a
-                href="#"
-                className="inline-block px-8 py-4 bg-white text-gray-900 rounded-md hover:bg-gray-100 transition-colors font-medium"
-              >
-                Donate
-              </a>
-            </div>
-            
-            {/* What happens after donation */}
-            <div className="border-t border-white/20 pt-8 mt-8">
-              <h3 className="text-lg font-semibold mb-4 text-center">What happens after you donate</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-200">
-                <div className="text-center">
-                  <div className="font-semibold mb-2 text-white">1. Receipt & Confirmation</div>
-                  <div>You receive an immediate tax-deductible receipt via email.</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold mb-2 text-white">2. Program Impact</div>
-                  <div>The vast majority of your contribution directly supports health, education, workforce development, and economic programs in Northern Uganda, with minimal overhead to sustain long-term operations and accountability.</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold mb-2 text-white">3. Impact Updates</div>
-                  <div>We share quarterly updates on how your contribution is creating lasting change.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <DonationSection />
 
       {/* Founder Attribution */}
       <section className="py-12 px-6 bg-white border-t border-gray-200">
@@ -514,6 +462,16 @@ export default function Home() {
           <p className="text-gray-700 leading-relaxed">
             Our 5-year goal: Reach 10,000+ lives and replicate this model across post-conflict regions.
           </p>
+        </div>
+      </section>
+
+      {/* Reports */}
+      <section className="py-12 px-6 bg-white border-t border-gray-200">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-gray-600 text-sm mb-2">
+            Reports: <a href="/reports/2025-impact-financial-summary" className="text-gray-900 hover:text-gray-700 underline font-medium">2025 Impact & Financial Summary</a> • <a href="/reports/2025-annual-report" className="text-gray-900 hover:text-gray-700 underline font-medium">2025 Annual Report</a>
+          </p>
+          <p className="text-gray-500 text-xs mt-2">All reports independently reviewed and publicly available.</p>
         </div>
       </section>
 
