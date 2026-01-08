@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 
-// Initialize Stripe lazily to avoid issues during build
-function getStripe() {
+// Initialize Stripe lazily using dynamic import to avoid issues during build
+async function getStripe() {
+  const Stripe = (await import('stripe')).default;
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     throw new Error('STRIPE_SECRET_KEY is not set');
@@ -14,7 +14,7 @@ function getStripe() {
 
 export async function POST(request: NextRequest) {
   try {
-    const stripe = getStripe();
+    const stripe = await getStripe();
     const { amount, email, name, isMonthly } = await request.json();
 
     // Validate amount
