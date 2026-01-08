@@ -18,10 +18,23 @@ export async function POST(request: NextRequest) {
     const stripe = await getStripe();
     const { amount, email, name, isMonthly } = await request.json();
 
-    // Get base URL from request (most reliable method)
-    const url = new URL(request.url);
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-      `${url.protocol}//${url.host}`;
+    // Get base URL - prioritize env var, then detect from request, fallback to production domain
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    
+    if (!baseUrl) {
+      try {
+        const url = new URL(request.url);
+        // Use the request URL, but prefer https
+        const protocol = url.protocol === 'https:' ? 'https:' : 'https:';
+        baseUrl = `${protocol}//${url.host}`;
+      } catch (e) {
+        // Fallback to production domain
+        baseUrl = 'https://beanumber.org';
+      }
+    }
+    
+    // Ensure baseUrl doesn't have trailing slash
+    baseUrl = baseUrl.replace(/\/$/, '');
 
     // Validate amount
     if (!amount || amount < 1) {
