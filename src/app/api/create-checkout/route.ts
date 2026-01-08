@@ -18,34 +18,9 @@ export async function POST(request: NextRequest) {
     const stripe = await getStripe();
     const { amount, email, name, isMonthly } = await request.json();
 
-    // Get the actual domain from the request - this is what the user is on!
-    const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
-    const protocol = request.headers.get('x-forwarded-proto') || 'https';
-    
-    // Build base URL - prioritize env var, then use the actual request host
-    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    
-    if (!baseUrl && host) {
-      // Use the host from the request - this is the actual domain!
-      baseUrl = `${protocol}://${host}`;
-    } else if (!baseUrl && process.env.VERCEL_URL && !process.env.VERCEL_URL.includes('your-vercel-domain')) {
-      // Only use VERCEL_URL if it's not a placeholder
-      baseUrl = `https://${process.env.VERCEL_URL}`;
-    } else if (!baseUrl) {
-      // Final fallback
-      baseUrl = 'https://www.beanumber.org';
-    }
-    
-    // Clean up the URL
-    baseUrl = baseUrl.replace(/\/$/, '');
-    if (!baseUrl.startsWith('http')) {
-      baseUrl = `https://${baseUrl}`;
-    }
-    
-    // Log for debugging
-    console.log('[Stripe Checkout] Host header:', host);
-    console.log('[Stripe Checkout] Final base URL:', baseUrl);
-    console.log('[Stripe Checkout] Success URL:', `${baseUrl}/donate/success`);
+    // SIMPLE FIX: Use production domain directly
+    // Environment variable takes precedence, otherwise use www.beanumber.org
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.beanumber.org';
 
     // Validate amount
     if (!amount || amount < 1) {
