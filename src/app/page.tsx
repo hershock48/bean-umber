@@ -57,18 +57,19 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="top" className="relative pt-20 pb-32 px-6 overflow-hidden">
+      <section id="top" className="relative pt-20 pb-24 md:pb-32 px-6 overflow-hidden min-h-[70vh] md:min-h-auto">
         {/* Background image with overlay */}
         <div className="absolute inset-0 z-0">
         <Image
             src="/images/homepage/hero-community-group.jpg"
             alt="Wide community group photo in front of painted building"
             fill
-            className="object-cover"
+            className="object-cover object-center md:object-cover"
+            sizes="100vw"
           priority
         />
         </div>
-        <div className="absolute inset-0 z-0 bg-black/65"></div>
+        <div className="absolute inset-0 z-0 bg-black/70 md:bg-black/65"></div>
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
