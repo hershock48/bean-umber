@@ -18,22 +18,25 @@ export async function POST(request: NextRequest) {
     const stripe = await getStripe();
     const { amount, email, name, isMonthly } = await request.json();
 
-    // Get the actual domain from headers (most reliable on Vercel)
-    const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
-    const protocol = request.headers.get('x-forwarded-proto') || 'https';
-    
-    // Build the base URL from headers (this is what Vercel provides)
+    // Vercel automatically sets VERCEL_URL - use that first (most reliable)
+    // Then try headers, then fallback
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     
-    if (!baseUrl && host) {
-      // Use the host header directly - this is the actual domain
-      baseUrl = `${protocol}://${host}`;
-    } else if (!baseUrl && process.env.VERCEL_URL) {
-      // Fallback to Vercel URL if host header is missing
-      baseUrl = `https://${process.env.VERCEL_URL}`;
-    } else if (!baseUrl) {
-      // Final fallback
-      baseUrl = 'https://beanumber.org';
+    if (!baseUrl) {
+      // Vercel automatically provides this - use it!
+      if (process.env.VERCEL_URL) {
+        baseUrl = `https://${process.env.VERCEL_URL}`;
+      } else {
+        // Try headers as fallback
+        const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+        const protocol = request.headers.get('x-forwarded-proto') || 'https';
+        
+        if (host) {
+          baseUrl = `${protocol}://${host}`;
+        } else {
+          baseUrl = 'https://beanumber.org';
+        }
+      }
     }
     
     // Clean up the URL
@@ -42,8 +45,12 @@ export async function POST(request: NextRequest) {
       baseUrl = `https://${baseUrl}`;
     }
     
-    console.log('[Stripe] Host header:', host);
-    console.log('[Stripe] Base URL:', baseUrl);
+    // Log everything for debugging
+    console.log('[Stripe Checkout] VERCEL_URL:', process.env.VERCEL_URL);
+    console.log('[Stripe Checkout] NEXT_PUBLIC_BASE_URL:', process.env.NEXT_PUBLIC_BASE_URL);
+    console.log('[Stripe Checkout] Host header:', request.headers.get('host'));
+    console.log('[Stripe Checkout] Final base URL:', baseUrl);
+    console.log('[Stripe Checkout] Success URL:', `${baseUrl}/donate/success`);
 
     // Validate amount
     if (!amount || amount < 1) {
