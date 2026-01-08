@@ -18,9 +18,30 @@ export async function POST(request: NextRequest) {
     const stripe = await getStripe();
     const { amount, email, name, isMonthly } = await request.json();
 
-    // Get base URL - use production domain to avoid Vercel preview deployment issues
-    // This ensures Stripe always redirects to the correct production URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://beanumber.org';
+    // Get base URL - try multiple methods to ensure we get the correct domain
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+    
+    // If still no URL, try to get from request headers
+    if (!baseUrl) {
+      const origin = request.headers.get('origin');
+      const host = request.headers.get('host');
+      const protocol = request.headers.get('x-forwarded-proto') || 'https';
+      
+      if (origin) {
+        baseUrl = origin;
+      } else if (host) {
+        baseUrl = `${protocol}://${host}`;
+      } else {
+        // Final fallback - use production domain
+        baseUrl = 'https://beanumber.org';
+      }
+    }
+    
+    // Remove trailing slash
+    baseUrl = baseUrl.replace(/\/$/, '');
+    
+    console.log('Stripe success URL will be:', `${baseUrl}/donate/success`);
 
     // Validate amount
     if (!amount || amount < 1) {
