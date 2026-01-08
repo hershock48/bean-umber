@@ -122,7 +122,7 @@ export default function Home() {
       <section id="impact-2025" className="py-24 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">2025 Measured Outcomes (Current)</h2>
-          <p className="text-gray-700 mb-12 leading-relaxed">These results demonstrate the model's effectiveness. We are on track to reach 10,000+ lives within five years and replicate the model in additional post-conflict regions.</p>
+          <p className="text-gray-700 mb-12 leading-relaxed">These results demonstrate the model's effectiveness. We are on track to reach 20,000+ lives within five years and replicate the model in additional post-conflict regions.</p>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white p-8 rounded-lg border border-gray-200">
@@ -460,7 +460,7 @@ export default function Home() {
       <section className="py-12 px-6 bg-white border-t border-gray-200">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-700 leading-relaxed">
-            Our 5-year goal: Reach 10,000+ lives and replicate this model across post-conflict regions.
+            Our 5-year goal: Reach 20,000+ lives and replicate this model across post-conflict regions.
           </p>
         </div>
       </section>

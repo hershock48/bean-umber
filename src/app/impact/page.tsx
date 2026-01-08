@@ -84,7 +84,7 @@ export default function Impact() {
 
           <div className="border-t border-gray-200 pt-8">
             <p className="text-gray-700 leading-relaxed">
-              These outcomes are the foundation of a regional model designed to reach 10,000+ lives within five years and replicate across post-conflict regions.
+              These outcomes are the foundation of a regional model designed to reach 20,000+ lives within five years and replicate across post-conflict regions.
             </p>
           </div>
         </div>

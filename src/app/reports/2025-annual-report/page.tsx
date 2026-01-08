@@ -109,7 +109,7 @@ export default function AnnualReport() {
               In 2026, we will welcome four university cohorts from Worcester University, expand vocational training programs, and complete the 380-student school facility. We continue to document and refine our model to enable replication across post-conflict regions.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              Our 5-year goal remains: reach 10,000+ lives and replicate this model across additional post-conflict regions where community leadership and local partnerships are in place.
+              Our 5-year goal remains: reach 20,000+ lives and replicate this model across additional post-conflict regions where community leadership and local partnerships are in place.
             </p>
           </section>
         </div>
