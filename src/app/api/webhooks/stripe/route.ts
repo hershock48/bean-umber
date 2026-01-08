@@ -491,7 +491,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     const name = session.customer_details?.name || session.metadata?.donor_name || customer?.name || 'Anonymous';
     const organization = session.custom_fields?.find(f => f.key === 'organization')?.text?.value || '';
     const phone = session.customer_details?.phone || customer?.phone || '';
-    const address = session.customer_details?.address || paymentIntent?.charges?.data[0]?.billing_details?.address || null;
+    const address = session.customer_details?.address || customer?.address || null;
     
     // Format address as single string
     const addressString = address
