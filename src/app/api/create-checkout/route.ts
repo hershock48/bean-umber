@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     const { amount, email, name, isMonthly } = await request.json();
 
     // Get base URL - prioritize environment variable, then detect from request
+    // Mobile-friendly: check multiple headers that work on mobile
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     
     if (!baseUrl) {
@@ -26,22 +27,37 @@ export async function POST(request: NextRequest) {
       if (process.env.VERCEL_URL) {
         baseUrl = `https://${process.env.VERCEL_URL}`;
       } else {
-        // Try to get from request
-        try {
-          const url = new URL(request.url);
-          const origin = request.headers.get('origin');
-          const host = request.headers.get('host') || url.host;
-          const protocol = request.headers.get('x-forwarded-proto') || url.protocol.replace(':', '') || 'https';
-          
-          if (origin) {
-            baseUrl = origin;
-          } else if (host) {
-            baseUrl = `${protocol}://${host}`;
-          } else {
+        // Try to get from request headers (mobile-friendly approach)
+        const origin = request.headers.get('origin');
+        const referer = request.headers.get('referer');
+        const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+        const protocol = request.headers.get('x-forwarded-proto') || 'https';
+        
+        // Try origin first (most reliable on mobile)
+        if (origin) {
+          baseUrl = origin;
+        } 
+        // Try referer (often available on mobile)
+        else if (referer) {
+          try {
+            const refererUrl = new URL(referer);
+            baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
+          } catch (e) {
+            // Fall through
+          }
+        }
+        // Try host header
+        else if (host) {
+          baseUrl = `${protocol}://${host}`;
+        }
+        // Try parsing request URL as last resort
+        else {
+          try {
+            const url = new URL(request.url);
+            baseUrl = `${url.protocol}//${url.host}`;
+          } catch (e) {
             baseUrl = 'https://beanumber.org';
           }
-        } catch (e) {
-          baseUrl = 'https://beanumber.org';
         }
       }
     }
@@ -49,7 +65,13 @@ export async function POST(request: NextRequest) {
     // Remove trailing slash and ensure it's a valid URL
     baseUrl = baseUrl.replace(/\/$/, '');
     
-    // Log for debugging (remove in production if needed)
+    // Ensure protocol is https (important for Stripe)
+    if (!baseUrl.startsWith('http')) {
+      baseUrl = `https://${baseUrl}`;
+    }
+    
+    // Log for debugging
+    console.log('[Stripe Checkout] Detected base URL:', baseUrl);
     console.log('[Stripe Checkout] Success URL:', `${baseUrl}/donate/success`);
     console.log('[Stripe Checkout] Cancel URL:', `${baseUrl}/#donate`);
 
