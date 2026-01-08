@@ -28,13 +28,25 @@ export default function SponsorLogin() {
 
       const data = await response.json();
 
+      console.log('Verify response:', { status: response.status, data });
+
       if (!response.ok) {
         throw new Error(data.error || 'Invalid email or sponsor code');
       }
 
+      if (!data.sponsorCode) {
+        throw new Error('No sponsor code returned from server');
+      }
+
       // Redirect to sponsor dashboard
+      console.log('Redirecting to:', `/sponsor/${data.sponsorCode}`);
       router.push(`/sponsor/${data.sponsorCode}`);
+      // Also try window.location as fallback
+      setTimeout(() => {
+        window.location.href = `/sponsor/${data.sponsorCode}`;
+      }, 500);
     } catch (err: any) {
+      console.error('Login error:', err);
       setError(err.message || 'Failed to verify. Please check your email and sponsor code.');
       setIsLoading(false);
     }
