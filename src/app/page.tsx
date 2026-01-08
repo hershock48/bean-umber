@@ -57,14 +57,15 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="top" className="relative pt-20 pb-24 md:pb-32 px-6 overflow-hidden min-h-[70vh] md:min-h-auto">
+      <section id="top" className="relative pt-16 pb-20 md:pt-20 md:pb-32 px-6 overflow-hidden">
         {/* Background image with overlay */}
         <div className="absolute inset-0 z-0">
         <Image
             src="/images/homepage/hero-community-group.jpg"
             alt="Wide community group photo in front of painted building"
             fill
-            className="object-cover object-center md:object-cover"
+            className="object-cover md:object-cover"
+            style={{ objectPosition: 'center 30%' }}
             sizes="100vw"
           priority
         />
