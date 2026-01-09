@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     default: "Be A Number, International | Rebuilding Post-War Societies",
     template: "%s | Be A Number, International"
   },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/icon.svg',
+  },
   description: "Be A Number partners with local leadership in Northern Uganda to build sustainable community systems — healthcare, education, workforce development, and economic infrastructure that transform communities from survival to long-term stability.",
   keywords: ["nonprofit", "Northern Uganda", "community development", "post-conflict recovery", "sustainable development", "501c3", "international development", "healthcare", "education", "workforce development"],
   authors: [{ name: "Be A Number, International" }],

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Be A Number, International | Rebuilding Post-War Societies",
   description: "Be A Number partners with local leadership in Northern Uganda to build sustainable community systems. In 2025, we reached 700+ patients, 60 women, and 15 students. Our goal: reach 20,000+ lives within five years.",
   openGraph: {
     title: "Be A Number, International | Rebuilding Post-War Societies",
