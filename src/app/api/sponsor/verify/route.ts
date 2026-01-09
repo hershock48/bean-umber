@@ -1,101 +1,140 @@
-/**
- * Sponsor Login Verification API
- * Handles sponsor authentication with email and sponsor code
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { findSponsorshipByCredentials } from '@/lib/airtable';
-import { logger } from '@/lib/logger';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  AuthenticationError,
-  withErrorHandling,
-} from '@/lib/errors';
-import { validateLoginCredentials, parseRequestBody } from '@/lib/validation';
-import { checkLoginRateLimit } from '@/lib/rate-limit';
-import { SESSION, SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 
-async function handler(request: NextRequest): Promise<NextResponse> {
-  const method = 'POST';
-  const path = '/api/sponsor/verify';
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_SPONSORSHIPS_TABLE = process.env.AIRTABLE_SPONSORSHIPS_TABLE || 'Sponsorships';
 
-  logger.apiRequest(method, path);
-
-  // Rate limiting
-  const rateLimitError = checkLoginRateLimit(request);
-  if (rateLimitError) {
-    throw rateLimitError;
-  }
-
-  // Parse and validate request body
-  const bodyResult = await parseRequestBody(request);
-  if (!bodyResult.success) {
-    throw new AuthenticationError(bodyResult.error);
-  }
-
-  const validationResult = validateLoginCredentials(bodyResult.data);
-  if (!validationResult.success) {
-    throw new AuthenticationError(validationResult.error);
-  }
-
-  const { email, code } = validationResult.data!;
-
-  // Verify credentials against database
-  logger.auth('login_attempt', true, {
-    email: logger.maskEmail(email),
-    code: logger.maskSponsorCode(code),
-  });
-
-  const sponsorship = await findSponsorshipByCredentials(email, code);
-
-  if (!sponsorship) {
-    logger.auth('login_failed', false, {
-      email: logger.maskEmail(email),
-      code: logger.maskSponsorCode(code),
-      reason: 'invalid_credentials',
-    });
-
-    throw new AuthenticationError(ERROR_MESSAGES.INVALID_CREDENTIALS);
-  }
-
-  const fields = sponsorship.fields;
-
-  // Create session cookie
-  const cookieStore = await cookies();
-  const expires = new Date();
-  expires.setTime(expires.getTime() + SESSION.MAX_AGE * 1000);
-
-  const sessionData = {
-    email: fields.SponsorEmail,
-    sponsorCode: fields.SponsorCode,
-    expires: expires.toISOString(),
-  };
-
-  // Set secure session cookie
-  cookieStore.set(SESSION.COOKIE_NAME, JSON.stringify(sessionData), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    expires,
-    path: SESSION.PATH,
-  });
-
-  logger.auth('login_success', true, {
-    email: logger.maskEmail(fields.SponsorEmail),
-    sponsorCode: logger.maskSponsorCode(fields.SponsorCode),
-  });
-
-  logger.apiResponse(method, path, 200);
-
-  return createSuccessResponse(
-    {
-      sponsorCode: fields.SponsorCode,
-      name: fields.SponsorName || '',
-    },
-    SUCCESS_MESSAGES.LOGIN_SUCCESS
-  );
+interface SponsorData {
+  sponsorCode: string;
+  email: string;
+  name: string;
+  childID: string;
+  childName: string;
+  childPhoto?: string;
+  sponsorshipStartDate: string;
 }
 
-export const POST = withErrorHandling(handler, 'POST', '/api/sponsor/verify');
+async function verifySponsor(email: string, sponsorCode: string): Promise<SponsorData | null> {
+  if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+    throw new Error('Airtable credentials not configured');
+  }
+
+  // Search for sponsor by email and sponsor code with all checks in formula
+  // Airtable checkbox = 1 for true, 0 for false
+  const formula = `AND({SponsorEmail}="${email}",{SponsorCode}="${sponsorCode}",{AuthStatus}="Active",{VisibleToSponsor}=1)`;
+  
+  console.log('[Verify] Airtable query:', formula);
+  
+  const response = await fetch(
+    `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_SPONSORSHIPS_TABLE}?filterByFormula=${encodeURIComponent(formula)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('[Verify] Airtable API error:', error);
+    throw new Error(`Airtable API error: ${error}`);
+  }
+
+  const data = await response.json();
+  console.log('[Verify] Airtable response:', { recordCount: data.records?.length || 0 });
+
+  if (data.records && data.records.length > 0) {
+    const record = data.records[0];
+    const fields = record.fields;
+
+    // Double-check fields (formula should handle this, but verify)
+    const authStatus = fields['AuthStatus'];
+    const visibleToSponsor = fields['VisibleToSponsor'];
+
+    if (authStatus !== 'Active') {
+      console.log('[Verify] AuthStatus not Active:', authStatus);
+      return null;
+    }
+
+    if (visibleToSponsor !== true && visibleToSponsor !== 1) {
+      console.log('[Verify] VisibleToSponsor not true:', visibleToSponsor);
+      return null;
+    }
+
+    return {
+      sponsorCode: fields['SponsorCode'] || sponsorCode,
+      email: fields['SponsorEmail'] || email,
+      name: fields['SponsorName'] || '',
+      childID: fields['ChildID'] || '',
+      childName: fields['ChildDisplayName'] || '',
+      childPhoto: fields['ChildPhoto']?.[0]?.url || undefined,
+      sponsorshipStartDate: fields['SponsorshipStartDate'] || '',
+    };
+  }
+
+  return null;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { email, sponsorCode } = await request.json();
+
+    if (!email || !sponsorCode) {
+      return NextResponse.json(
+        { error: 'Email and sponsor code are required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify sponsor
+    const sponsor = await verifySponsor(email, sponsorCode);
+
+    if (!sponsor) {
+      return NextResponse.json(
+        { error: 'Invalid email or sponsor code, or sponsorship is not active' },
+        { status: 401 }
+      );
+    }
+
+    // Create session cookie (30 days)
+    const cookieStore = await cookies();
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 30);
+
+    const cookieValue = JSON.stringify({
+      email: sponsor.email,
+      sponsorCode: sponsor.sponsorCode,
+      expires: expires.toISOString(),
+    });
+
+    // Cookie settings that work reliably
+    cookieStore.set('sponsor_session', cookieValue, {
+      httpOnly: true,
+      secure: true, // Always true for HTTPS (beanumber.org)
+      sameSite: 'lax',
+      expires,
+      path: '/',
+      // Do NOT set domain - let it default to current domain
+    });
+
+    console.log('[Verify] Session cookie set:', {
+      email: sponsor.email,
+      sponsorCode: sponsor.sponsorCode,
+      expires: expires.toISOString(),
+    });
+
+    return NextResponse.json({
+      success: true,
+      sponsorCode: sponsor.sponsorCode,
+      name: sponsor.name,
+    });
+  } catch (error: any) {
+    console.error('[Sponsor Verify] Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to verify sponsor' },
+      { status: 500 }
+    );
+  }
+}
