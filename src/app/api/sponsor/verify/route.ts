@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     // Cookie settings that work reliably
     cookieStore.set('sponsor_session', cookieValue, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only secure in production (HTTPS)
+      secure: true, // Always true for HTTPS (beanumber.org)
       sameSite: 'lax',
       expires,
       path: '/',

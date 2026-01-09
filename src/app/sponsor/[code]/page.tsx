@@ -32,9 +32,8 @@ async function getSponsorSession(code: string) {
   }
 }
 
-export default async function SponsorPage({ params }: { params: Promise<{ code: string }> }) {
-  const { code } = await params;
-  const session = await getSponsorSession(code);
+export default async function SponsorPage({ params }: { params: { code: string } }) {
+  const session = await getSponsorSession(params.code);
 
   if (!session) {
     redirect('/sponsor/login');
@@ -51,7 +50,7 @@ export default async function SponsorPage({ params }: { params: Promise<{ code: 
               <span className="text-xl font-semibold text-gray-900">Be A Number</span>
             </Link>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Sponsor Code: {code}</span>
+              <span className="text-sm text-gray-600">Sponsor Code: {params.code}</span>
               <form action="/api/sponsor/logout" method="POST">
                 <button
                   type="submit"
@@ -66,7 +65,7 @@ export default async function SponsorPage({ params }: { params: Promise<{ code: 
       </nav>
 
       {/* Dashboard */}
-      <SponsorDashboard sponsorCode={code} email={session.email} />
+      <SponsorDashboard sponsorCode={params.code} email={session.email} />
     </div>
   );
 }

@@ -1,87 +1,118 @@
-/**
- * Admin Updates Submit API
- * Allows field team to submit updates (REQUIRES ADMIN AUTH)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
-import { submitUpdate } from '@/lib/airtable';
-import { logger } from '@/lib/logger';
-import {
-  createSuccessResponse,
-  createdResponse,
-  withErrorHandling,
-  ValidationError,
-} from '@/lib/errors';
-import { requireAdminAuth } from '@/lib/auth';
-import { validateUpdateSubmission, parseRequestBody } from '@/lib/validation';
-import { checkUpdateSubmissionRateLimit } from '@/lib/rate-limit';
-import { SUCCESS_MESSAGES } from '@/lib/constants';
 
-async function handler(request: NextRequest): Promise<NextResponse> {
-  const method = 'POST';
-  const path = '/api/admin/updates/submit';
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_SPONSORSHIPS_TABLE = process.env.AIRTABLE_SPONSORSHIPS_TABLE || 'Sponsorships';
+const AIRTABLE_UPDATES_TABLE = process.env.AIRTABLE_UPDATES_TABLE || 'Updates';
 
-  logger.apiRequest(method, path);
-
-  // CRITICAL: Require admin authentication
-  requireAdminAuth(request);
-
-  // Rate limiting
-  const rateLimitError = checkUpdateSubmissionRateLimit(request);
-  if (rateLimitError) {
-    throw rateLimitError;
-  }
-
-  // Parse request body (handle both JSON and FormData)
-  let data: any;
-
-  const contentType = request.headers.get('content-type') || '';
-
-  if (contentType.includes('application/json')) {
-    const bodyResult = await parseRequestBody(request);
-    if (!bodyResult.success) {
-      throw new ValidationError(bodyResult.error!);
-    }
-    data = bodyResult.data;
-  } else if (contentType.includes('multipart/form-data')) {
+export async function POST(request: NextRequest) {
+  try {
     const formData = await request.formData();
-    data = {
-      childId: formData.get('childId'),
-      sponsorCode: formData.get('sponsorCode'),
-      updateType: formData.get('updateType'),
-      title: formData.get('title'),
-      content: formData.get('content'),
-      submittedBy: formData.get('submittedBy'),
-      // Note: Photo upload handling would go here
+    
+    const sponsorCode = formData.get('sponsorCode') as string;
+    const updateType = formData.get('updateType') as string;
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const submittedBy = formData.get('submittedBy') as string;
+    const photos = formData.getAll('photos') as File[];
+
+    if (!sponsorCode || !title || !content || !submittedBy) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable credentials not configured');
+    }
+
+    // Upload photos to Airtable (convert to base64 or use Airtable's attachment API)
+    const photoAttachments: any[] = [];
+    
+    // Note: Airtable attachments need to be uploaded separately or converted to URLs
+    // For now, we'll store photo metadata and you can upload manually or use a file storage service
+    // In production, you'd want to upload to S3/Cloudinary/etc. and store URLs
+
+    // Get ChildID from Sponsorships table
+    const sponsorshipFormula = `{SponsorCode} = "${sponsorCode}"`;
+    const sponsorshipResponse = await fetch(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_SPONSORSHIPS_TABLE}?filterByFormula=${encodeURIComponent(sponsorshipFormula)}&maxRecords=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    let childID = null;
+    if (sponsorshipResponse.ok) {
+      const sponsorshipData = await sponsorshipResponse.json();
+      if (sponsorshipData.records && sponsorshipData.records.length > 0) {
+        childID = sponsorshipData.records[0].fields['ChildID'] || null;
+      }
+    }
+
+    if (!childID) {
+      return NextResponse.json(
+        { error: 'Child ID not found for this sponsor code' },
+        { status: 404 }
+      );
+    }
+
+    // Create update record in Airtable
+    const now = new Date().toISOString();
+    const fields: any = {
+      'ChildID': childID,
+      'SponsorCode': sponsorCode,
+      'UpdateType': updateType,
+      'Title': title,
+      'Content': content,
+      'Status': 'Pending Review',
+      'VisibleToSponsor': false,
+      'RequestedBySponsor': false,
+      'RequestedAt': now,
+      'SubmittedBy': submittedBy,
     };
-  } else {
-    throw new ValidationError('Invalid content type');
+
+    // If you have photo URLs, add them here
+    // For now, photos will need to be added manually in Airtable or via a file upload service
+
+    const response = await fetch(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_UPDATES_TABLE}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Airtable API error: ${error}`);
+    }
+
+    const data = await response.json();
+
+    // TODO: Upload photos to file storage and update record with photo URLs
+    // For now, field team can add photos manually in Airtable after submission
+
+    return NextResponse.json({
+      success: true,
+      updateId: data.id,
+      message: 'Update submitted successfully. Photos can be added in Airtable.',
+    });
+  } catch (error: any) {
+    console.error('[Submit Update] Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to submit update' },
+      { status: 500 }
+    );
   }
-
-  // Validate input
-  const validation = validateUpdateSubmission(data);
-  if (!validation.success) {
-    throw new ValidationError(validation.error!);
-  }
-
-  const updateData = validation.data!;
-
-  // Submit update to Airtable
-  const record = await submitUpdate(updateData);
-
-  logger.info('Update submitted by admin', {
-    updateId: record.id,
-    childId: updateData.childId,
-    type: updateData.updateType,
-    submittedBy: updateData.submittedBy,
-  });
-
-  logger.apiResponse(method, path, 201);
-
-  return createdResponse(
-    { updateId: record.id },
-    SUCCESS_MESSAGES.UPDATE_SUBMITTED
-  );
 }
-
-export const POST = withErrorHandling(handler, 'POST', '/api/admin/updates/submit');

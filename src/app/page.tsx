@@ -37,9 +37,6 @@ export default function Home() {
               <a href="#partnerships" className="text-gray-700 hover:text-gray-900 transition-colors">
                 Partnerships
               </a>
-              <a href="/sponsor/login" className="text-gray-700 hover:text-gray-900 transition-colors">
-                Sponsor Login
-              </a>
               <a
                 href="#donate"
                 className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
@@ -103,76 +100,33 @@ export default function Home() {
               </a>
             </div>
             
-            {/* Social Proof Bar */}
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-center gap-6 py-4 px-6 bg-white/10 backdrop-blur-sm rounded-md border border-white/20">
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>15 Years of Work</span>
-                </div>
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span>100+ Active Donors</span>
-                </div>
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>$150K+ Grassroots Funding</span>
-                </div>
+            {/* Trust Bar */}
+            <div className="flex flex-wrap items-center justify-center gap-6 py-4 px-6 bg-white/10 backdrop-blur-sm rounded-md border border-white/20">
+              <div className="flex items-center gap-2 text-white text-sm font-medium">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>501(c)(3) Registered</span>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 py-4 px-6 bg-white/10 backdrop-blur-sm rounded-md border border-white/20">
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span>501(c)(3) Registered</span>
-                </div>
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span>96.7% Program Allocation</span>
-                </div>
-                <div className="flex items-center gap-2 text-white text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  <span>Audited Reports</span>
-                </div>
+              <div className="flex items-center gap-2 text-white text-sm font-medium">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>96.7% Program Allocation</span>
+              </div>
+              <div className="flex items-center gap-2 text-white text-sm font-medium">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span>Local Leadership</span>
+              </div>
+              <div className="flex items-center gap-2 text-white text-sm font-medium">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span>Audited Reports</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Grassroots Origin Story */}
-      <section className="py-16 md:py-20 px-6 bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Built from the Ground Up</h2>
-          <p className="text-lg text-gray-700 leading-relaxed mb-6">
-            The work that became Be A Number began 15 years ago as a grassroots effort, selling over 2,000 shirts to support children and communities around the world. What started as a simple idea — that anyone can make a difference — has grown into a movement.
-          </p>
-          <p className="text-lg text-gray-700 leading-relaxed mb-8">
-            Since becoming a 501(c)(3), that same community of support has grown into 100+ active donors and more than $150,000 in grassroots funding. Every dollar is invested in building systems that last, ensuring communities can sustain themselves long after our initial support.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#donate"
-              className="px-8 py-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors text-center font-medium"
-            >
-              Join the Movement
-            </a>
-            <a
-              href="#model"
-              className="px-8 py-4 bg-gray-100 text-gray-900 rounded-md hover:bg-gray-200 transition-colors text-center font-medium"
-            >
-              See How It Works
-            </a>
           </div>
         </div>
       </section>
@@ -433,7 +387,7 @@ export default function Home() {
           {/* Primary Image */}
           <div className="mb-12 w-full max-w-2xl mx-auto">
             <div className="relative w-full aspect-[16/10] bg-gray-200 rounded-lg overflow-hidden">
-              <Image
+            <Image
                 src="/images/impact-page/secondary-image.jpg"
                 alt="Kevin Hershock with community members carrying jerrycans"
                 fill
