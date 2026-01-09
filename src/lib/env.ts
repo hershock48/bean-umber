@@ -10,9 +10,9 @@ interface EnvironmentVariables {
   AIRTABLE_SPONSORSHIPS_TABLE: string;
   AIRTABLE_UPDATES_TABLE: string;
 
-  // Stripe
-  STRIPE_SECRET_KEY: string;
-  STRIPE_WEBHOOK_SECRET: string;
+  // Stripe (optional until configured)
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?: string;
 
   // SendGrid
@@ -42,8 +42,6 @@ function validateEnvironment(): EnvironmentVariables {
     'AIRTABLE_BASE_ID',
     'AIRTABLE_SPONSORSHIPS_TABLE',
     'AIRTABLE_UPDATES_TABLE',
-    'STRIPE_SECRET_KEY',
-    'STRIPE_WEBHOOK_SECRET',
   ] as const;
 
   const missing: string[] = [];
@@ -62,7 +60,7 @@ function validateEnvironment(): EnvironmentVariables {
   }
 
   // Warn about optional but recommended variables
-  const recommendedVars = ['SENDGRID_API_KEY', 'ADMIN_API_TOKEN'];
+  const recommendedVars = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'SENDGRID_API_KEY', 'ADMIN_API_TOKEN'];
   const missingRecommended: string[] = [];
 
   for (const varName of recommendedVars) {
@@ -82,8 +80,8 @@ function validateEnvironment(): EnvironmentVariables {
     AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID!,
     AIRTABLE_SPONSORSHIPS_TABLE: process.env.AIRTABLE_SPONSORSHIPS_TABLE!,
     AIRTABLE_UPDATES_TABLE: process.env.AIRTABLE_UPDATES_TABLE!,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY!,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET!,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN,
@@ -153,14 +151,28 @@ export function getAirtableConfig() {
 
 /**
  * Get Stripe configuration
+ * @throws {Error} if Stripe is not configured
  */
 export function getStripeConfig() {
   const envVars = getEnv();
+
+  if (!envVars.STRIPE_SECRET_KEY || !envVars.STRIPE_WEBHOOK_SECRET) {
+    throw new Error('Stripe is not configured. Set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET environment variables.');
+  }
+
   return {
     secretKey: envVars.STRIPE_SECRET_KEY,
     webhookSecret: envVars.STRIPE_WEBHOOK_SECRET,
     publishableKey: envVars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   };
+}
+
+/**
+ * Check if Stripe is configured
+ */
+export function isStripeConfigured(): boolean {
+  const envVars = getEnv();
+  return !!(envVars.STRIPE_SECRET_KEY && envVars.STRIPE_WEBHOOK_SECRET);
 }
 
 /**
