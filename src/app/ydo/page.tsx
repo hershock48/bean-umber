@@ -311,7 +311,7 @@ export default function YDOHome() {
                 Visit our website: <a href="https://www.theyouth.world" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">theyouth.world</a>
               </p>
               <p className="text-gray-400 text-sm">
-                Visit our partner: <a href="https://beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
+                Visit our partner: <a href="https://www.beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
               </p>
             </div>
             <div>

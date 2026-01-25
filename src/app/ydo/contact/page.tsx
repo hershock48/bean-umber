@@ -99,7 +99,7 @@ export default function YDOContact() {
                   </p>
                   <p className="text-gray-700">
                     <a 
-                      href="https://beanumber.org" 
+                      href="https://www.beanumber.org" 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="text-green-700 hover:text-green-800 underline font-medium"
@@ -108,7 +108,7 @@ export default function YDOContact() {
                     </a>
                   </p>
                   <p className="text-gray-600 text-sm mt-2">
-                    Visit <a href="https://beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700 underline">beanumber.org</a> for contact information
+                    Visit <a href="https://www.beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700 underline">beanumber.org</a> for contact information
                   </p>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export default function YDOContact() {
                   For general inquiries, partnership opportunities, or ways to support our work, please visit our partner organization's website.
                 </p>
                 <a
-                  href="https://beanumber.org"
+                  href="https://www.beanumber.org"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium"
@@ -225,7 +225,7 @@ export default function YDOContact() {
                 Visit our website: <a href="https://www.theyouth.world" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">theyouth.world</a>
               </p>
               <p className="text-gray-400 text-sm">
-                Visit our partner: <a href="https://beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
+                Visit our partner: <a href="https://www.beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
               </p>
             </div>
             <div>

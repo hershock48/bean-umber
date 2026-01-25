@@ -32,8 +32,23 @@ export default function ImpactFinancialSummary() {
       {/* Main Content */}
       <main className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">2025 Impact & Financial Summary</h1>
-          <p className="text-xl text-gray-600 mb-12">One-page overview of outcomes and where funds went</p>
+          {/* Header with Download Button */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">2025 Impact & Financial Summary</h1>
+              <p className="text-xl text-gray-600">One-page overview of outcomes and where funds went</p>
+            </div>
+            <a
+              href="/reports/2025-impact-financial-summary.pdf"
+              download
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors text-sm font-medium whitespace-nowrap"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download PDF
+            </a>
+          </div>
 
           {/* Key Outcomes */}
           <section className="mb-12">
@@ -81,6 +96,17 @@ export default function ImpactFinancialSummary() {
             <p className="text-gray-700 leading-relaxed mt-4">
               Administrative and operational functions remain intentionally lean, ensuring strong governance, compliance, reporting, and long-term sustainability as the organization scales across post-conflict regions.
             </p>
+          </section>
+
+          {/* Related Reports */}
+          <section className="border-t border-gray-200 pt-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Reports</h3>
+            <Link 
+              href="/reports/2025-annual-report" 
+              className="text-gray-700 hover:text-gray-900 underline"
+            >
+              2025 Annual Report — Full narrative report →
+            </Link>
           </section>
         </div>
       </main>

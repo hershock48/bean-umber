@@ -284,7 +284,7 @@ export default function YDOPartnership() {
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Learn More About Be A Number</h2>
           <p className="text-gray-700 mb-6">
-            Visit <a href="https://beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-700 hover:text-green-800 underline font-medium">beanumber.org</a> to learn more about our partner organization and their integrated systems approach to community development.
+            Visit <a href="https://www.beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-700 hover:text-green-800 underline font-medium">beanumber.org</a> to learn more about our partner organization and their integrated systems approach to community development.
           </p>
         </div>
       </section>
@@ -305,7 +305,7 @@ export default function YDOPartnership() {
                 Visit our website: <a href="https://www.theyouth.world" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">theyouth.world</a>
               </p>
               <p className="text-gray-400 text-sm">
-                Visit our partner: <a href="https://beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
+                Visit our partner: <a href="https://www.beanumber.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">beanumber.org</a>
               </p>
             </div>
             <div>
