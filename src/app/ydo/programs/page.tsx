@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { YDONavigation } from '@/components/YDONavigation';
 
 export const metadata: Metadata = {
-  title: "Our Programs",
+  title: "Our Programs | Youth Development Organisation Uganda",
   description: "YDO implements education support, vocational training, psycho-social support, and child protection programs in Northern Uganda, empowering war-affected communities.",
   openGraph: {
     title: "Our Programs | Youth Development Organisation Uganda",
@@ -15,40 +16,7 @@ export const metadata: Metadata = {
 export default function YDOPrograms() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-green-200">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/ydo" className="flex items-center gap-3">
-              <div className="h-8 w-8 bg-green-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">YDO</span>
-              </div>
-              <span className="text-xl font-semibold text-gray-900">Youth Development Organisation</span>
-            </Link>
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/ydo/about" className="text-gray-700 hover:text-green-700 transition-colors">
-                About
-              </Link>
-              <Link href="/ydo/programs" className="text-green-700 font-medium">
-                Programs
-              </Link>
-              <Link href="/ydo/partnership" className="text-gray-700 hover:text-green-700 transition-colors">
-                Partnership
-              </Link>
-              <Link href="/ydo/contact" className="text-gray-700 hover:text-green-700 transition-colors">
-                Contact
-              </Link>
-            </div>
-            <div className="md:hidden">
-              <button className="text-gray-700">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <YDONavigation currentPath="/ydo/programs" />
 
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 md:pt-24 md:pb-32 px-6 bg-green-50">

@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Be A Number, International" }],
   creator: "Be A Number, International",
   publisher: "Be A Number, International",
+  alternates: {
+    canonical: 'https://www.beanumber.org',
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -62,9 +65,41 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // Add Google Search Console verification if you have it
+    // TODO: Kevin - Add Google Search Console verification code here
     // google: "your-verification-code",
   },
+};
+
+// Schema.org structured data for Organization/NGO
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'Be A Number, International',
+  alternateName: 'Be A Number',
+  url: 'https://www.beanumber.org',
+  logo: 'https://www.beanumber.org/icon.svg',
+  description: 'Be A Number partners with local leadership in Northern Uganda to build sustainable community systems — healthcare, education, workforce development, and economic infrastructure.',
+  foundingDate: '2022',
+  founder: {
+    '@type': 'Person',
+    name: 'Kevin Hershock',
+  },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '8475 18 1/2 Mile Road',
+    addressLocality: 'Marshall',
+    addressRegion: 'MI',
+    postalCode: '49068',
+    addressCountry: 'US',
+  },
+  email: 'Kevin@beanumber.org',
+  nonprofitStatus: '501(c)(3)',
+  taxID: '93-1948872',
+  areaServed: {
+    '@type': 'Place',
+    name: 'Northern Uganda',
+  },
+  sameAs: [],
 };
 
 export default function RootLayout({
@@ -74,6 +109,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
