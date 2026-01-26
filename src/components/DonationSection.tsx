@@ -107,15 +107,28 @@ export function DonationSection({}: DonationSectionProps) {
             </button>
             <button
               onClick={() => setIsMonthly(true)}
-              className={`px-6 py-2 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`relative px-6 py-2 rounded-md font-medium transition-colors cursor-pointer ${
                 isMonthly
-                  ? 'bg-white text-gray-900'
+                  ? 'bg-white text-gray-900 ring-2 ring-white ring-offset-2 ring-offset-gray-900'
                   : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
+              {/* Recommended badge */}
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                Most Impact
+              </span>
               Monthly
             </button>
           </div>
+          
+          {/* Monthly benefit callout */}
+          {isMonthly && (
+            <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4 mb-8 max-w-lg mx-auto text-center">
+              <p className="text-green-200 text-sm">
+                <span className="font-semibold">Monthly donors</span> provide predictable funding that helps us plan long-term programs and sustain local jobs.
+              </p>
+            </div>
+          )}
 
           {/* Donation Tiers */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">

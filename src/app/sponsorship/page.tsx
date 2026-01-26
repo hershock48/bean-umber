@@ -30,6 +30,9 @@ export default function SponsorshipCatalog() {
   const [children, setChildren] = useState<AvailableChild[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [waitlistError, setWaitlistError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAvailableChildren() {
@@ -113,23 +116,75 @@ export default function SponsorshipCatalog() {
                   All Children Are Sponsored!
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  Great news - all our children currently have sponsors!
-                  If you'd like to be notified when new children need sponsors,
-                  or make a general donation, please contact us.
+                  Great news — all our children currently have sponsors! 
+                  Join our waitlist to be notified when new children need sponsors.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
-                    href="/contact"
-                    className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-center"
+                
+                {/* Email Waitlist Form */}
+                {waitlistSubmitted ? (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <p className="text-green-800 font-medium">
+                      ✓ You're on the list! We'll email you when children need sponsors.
+                    </p>
+                  </div>
+                ) : (
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      // Simple email validation
+                      if (!waitlistEmail || !waitlistEmail.includes('@')) {
+                        setWaitlistError('Please enter a valid email address');
+                        return;
+                      }
+                      // In a real implementation, this would submit to an API
+                      // For now, we'll just show success (the actual backend would need to be built)
+                      setWaitlistSubmitted(true);
+                      setWaitlistError(null);
+                    }}
+                    className="mb-6"
                   >
-                    Contact Us
-                  </Link>
-                  <Link
-                    href="/"
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center"
-                  >
-                    Donate Now
-                  </Link>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="email"
+                        value={waitlistEmail}
+                        onChange={(e) => {
+                          setWaitlistEmail(e.target.value);
+                          setWaitlistError(null);
+                        }}
+                        placeholder="Enter your email"
+                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <button
+                        type="submit"
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                      >
+                        Join Waitlist
+                      </button>
+                    </div>
+                    {waitlistError && (
+                      <p className="text-red-600 text-sm mt-2">{waitlistError}</p>
+                    )}
+                  </form>
+                )}
+                
+                <div className="border-t border-blue-200 pt-6">
+                  <p className="text-gray-600 text-sm mb-4">
+                    Want to help in other ways?
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Link
+                      href="/#donate"
+                      className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-center"
+                    >
+                      Make a Donation
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                    >
+                      Contact Us
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

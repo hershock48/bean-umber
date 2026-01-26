@@ -55,20 +55,20 @@ export default function Founder() {
           </div>
 
           <div className="prose prose-lg max-w-none">
-            <p className="text-gray-700 leading-relaxed mb-6">
-              Kevin Hershock is a founder-led social entrepreneur with over 15 years of cross-cultural development experience focused on post-conflict community recovery in East Africa.
+            <p className="text-gray-700 leading-relaxed mb-6 text-xl">
+              The first time Kevin Hershock set foot in Northern Uganda, the war had just ended. Roads that once moved troops now carried families trying to find their way home. Communities that had survived decades of violence were starting over with almost nothing.
             </p>
 
             <p className="text-gray-700 leading-relaxed mb-6">
-              He founded Be A Number in 2010 while at Hillsdale College as a social enterprise modeled on product-linked impact, generating national media attention and multi-city deployment of community programs across the United States and internationally.
+              It was 2008. Kevin was a college student who'd already spent time in Detroit homeless shelters, on Pine Ridge Reservation, in the Dominican Republic, and across Eastern Europe. But Uganda was different. The Acholi people he met weren't asking for charity—they were asking for partnership. They had plans for their communities. What they needed was someone willing to walk alongside them for the long haul.
             </p>
 
             <p className="text-gray-700 leading-relaxed mb-6">
-              Kevin's early field work included service in Detroit homeless shelters, Pine Ridge Indian Reservation, the Dominican Republic, Eastern Europe, and extended residence in Uganda shortly after the civil war, where he established long-term community relationships and local leadership partnerships.
+              Kevin stayed. Not for a week or a semester—for years. He learned the language, ate the food, slept in the villages. He watched mothers who had survived unimaginable violence start small businesses. He sat with community elders who mapped out dreams for schools that didn't exist yet.
             </p>
 
             <p className="text-gray-700 leading-relaxed mb-6">
-              In Uganda, he launched and operated a women-led bakery employing formerly exploited women, sustained over five years, and designed multiple economic empowerment models for women and families including entrepreneurship training and micro-finance initiatives.
+              His first major project was a bakery. It employed women who had been exploited during the war, giving them income and dignity. The bakery ran for five years. But Kevin realized something: individual projects, no matter how successful, weren't enough. To really rebuild a community, you needed systems—healthcare, education, job training—all working together, all owned locally.
             </p>
 
             {/* Secondary Image - Mid-page */}
@@ -76,48 +76,49 @@ export default function Founder() {
               <div className="relative w-full aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden">
                 <Image
                   src="/images/founder/secondary-woman-sewing.jpg"
-                  alt="Kevin Hershock with seated mother and child in Northern Uganda"
+                  alt="Women learning vocational skills in Northern Uganda"
                   fill
                   className="object-cover"
                 />
               </div>
             </div>
 
+            <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">Building Something Permanent</h2>
+
             <p className="text-gray-700 leading-relaxed mb-6">
-              He later pivoted from individual interventions to a community-systems model, partnering directly with Acholi leadership on Acholi land in Northern Uganda. Through a co-founding partnership with Youth Development Organization (YDO), he secured six acres for integrated community development and directed the construction of core infrastructure including:
+              In partnership with Simon Peter Wilobo and the Youth Development Organisation, Kevin secured six acres of land—Acholi land, for Acholi people. Together they built a medical center that's now treating hundreds of patients. A school for 380 children is nearly complete. Vocational training programs have taught 60 women to sew and 8 men to build. Every staff member—all 30 of them—is from the local community.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed mb-6">
+              The difference from traditional aid is simple: when international funding ends, these programs don't collapse. The community owns them. The community runs them. The systems generate their own income and serve their own people.
+            </p>
+
+            <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">2025 Impact</h2>
+
+            <p className="text-gray-700 leading-relaxed mb-4">
+              In just one year, the model proved itself:
             </p>
 
             <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2 ml-4">
-              <li>Medical center (completed, operational)</li>
-              <li>Nursery & primary school (95% complete, 380-student capacity)</li>
-              <li>Vocational training facilities</li>
-              <li>3-bedroom international lodge and 3 dormitories</li>
-              <li>Local workforce of 30 community members</li>
+              <li>700+ patients received medical care</li>
+              <li>68 adults completed vocational training</li>
+              <li>15 children supported through school</li>
+              <li>30 local jobs created</li>
+              <li>96.7% of funds went directly to programs</li>
             </ul>
 
             <p className="text-gray-700 leading-relaxed mb-6">
-              Under Kevin's leadership, Be A Number delivered the following 2025 impact:
-            </p>
-
-            <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2 ml-4">
-              <li>60 women completed vocational training</li>
-              <li>8 men completed construction training</li>
-              <li>700+ individuals served medically</li>
-              <li>60+ youth engaged in sports & wellness programs</li>
-              <li>15 children supported through education sponsorship</li>
-            </ul>
-
-            <p className="text-gray-700 leading-relaxed mb-6">
-              Kevin established international university partnerships, hosting senior administrators from Worcester University (UK) and scheduling four UK student cohorts for 2026.
+              University of Worcester (UK) administrators visited and scheduled four student cohorts for 2026—proof that the model is attracting serious institutional partners.
             </p>
 
             <p className="text-gray-700 leading-relaxed mb-8">
-              In 2025, the organization raised and deployed $79,623 with 96.7% program efficiency while transitioning from pilot to scalable platform.
+              Fifteen years after that first trip to Uganda, Kevin is still there, still building. But now he's not building alone. He's part of something the community owns—something that will outlast any single person or donation.
             </p>
 
             <div className="border-t border-gray-200 pt-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Education</h2>
-              <p className="text-gray-700">Hillsdale College — Bachelor's Degree, 2010</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Background</h2>
+              <p className="text-gray-700 mb-2">Hillsdale College, 2010</p>
+              <p className="text-gray-700">Founded Be A Number as a social enterprise while still a student, generating national attention and launching programs across the U.S. before focusing full-time on Uganda.</p>
             </div>
           </div>
         </div>
