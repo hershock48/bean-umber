@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
+import { checkCheckoutRateLimit } from '@/lib/rate-limit';
+import { sanitizeString, sanitizeEmail, sanitizeNumber, safeErrorMessage } from '@/lib/sanitize';
 
 // Initialize Stripe lazily using dynamic import to avoid issues during build
 async function getStripe() {
@@ -33,18 +35,38 @@ function validateEnvVars() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const rateLimitError = checkCheckoutRateLimit(request);
+    if (rateLimitError) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: rateLimitError.retryAfter 
+            ? { 'Retry-After': rateLimitError.retryAfter.toString() }
+            : undefined
+        }
+      );
+    }
+    
     // Validate environment variables
     validateEnvVars();
     
     const stripe = await getStripe();
-    const { amount, email, name, isMonthly } = await request.json();
+    const body = await request.json();
+    
+    // Sanitize inputs
+    const amount = sanitizeNumber(body.amount);
+    const email = sanitizeEmail(body.email);
+    const name = sanitizeString(body.name, 200);
+    const isMonthly = Boolean(body.isMonthly);
 
     // Get origin from request header (as per Stripe docs)
     const origin = request.headers.get('origin') || 'https://www.beanumber.org';
 
     // Validate amount
     const MAX_DONATION_AMOUNT = 10000; // $10,000 maximum per transaction
-    if (!amount || amount < 1) {
+    if (amount === null || amount < 1) {
       return NextResponse.json(
         { error: 'Invalid donation amount. Minimum donation is $1.' },
         { status: 400 }
@@ -121,10 +143,10 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe checkout error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
+      { error: safeErrorMessage(error, 'Failed to create checkout session. Please try again.') },
       { status: 500 }
     );
   }

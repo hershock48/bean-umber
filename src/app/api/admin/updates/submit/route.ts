@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkUpdateSubmissionRateLimit } from '@/lib/rate-limit';
+import { sanitizeString, sanitizeSponsorCode, safeErrorMessage } from '@/lib/sanitize';
 
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
@@ -7,6 +9,20 @@ const AIRTABLE_UPDATES_TABLE = process.env.AIRTABLE_UPDATES_TABLE || 'Updates';
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const rateLimitError = checkUpdateSubmissionRateLimit(request);
+    if (rateLimitError) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: rateLimitError.retryAfter 
+            ? { 'Retry-After': rateLimitError.retryAfter.toString() }
+            : undefined
+        }
+      );
+    }
+    
     const formData = await request.formData();
     
     // Authentication check
@@ -33,11 +49,12 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const sponsorCode = formData.get('sponsorCode') as string;
-    const updateType = formData.get('updateType') as string;
-    const title = formData.get('title') as string;
-    const content = formData.get('content') as string;
-    const submittedBy = formData.get('submittedBy') as string;
+    // Sanitize inputs
+    const sponsorCode = sanitizeSponsorCode(formData.get('sponsorCode') as string);
+    const updateType = sanitizeString(formData.get('updateType') as string, 50);
+    const title = sanitizeString(formData.get('title') as string, 200);
+    const content = sanitizeString(formData.get('content') as string, 5000);
+    const submittedBy = sanitizeString(formData.get('submittedBy') as string, 100);
     const photos = formData.getAll('photos') as File[];
 
     if (!sponsorCode || !title || !content || !submittedBy) {
@@ -118,8 +135,9 @@ export async function POST(request: NextRequest) {
     );
 
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Airtable API error: ${error}`);
+      const errorText = await response.text();
+      console.error('[Admin Submit] Airtable error:', errorText);
+      throw new Error('Failed to save update. Please try again.');
     }
 
     const data = await response.json();
@@ -132,10 +150,10 @@ export async function POST(request: NextRequest) {
       updateId: data.id,
       message: 'Update submitted successfully. Photos can be added in Airtable.',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Submit Update] Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to submit update' },
+      { error: safeErrorMessage(error, 'Failed to submit update. Please try again.') },
       { status: 500 }
     );
   }
