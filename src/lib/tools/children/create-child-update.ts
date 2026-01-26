@@ -11,7 +11,7 @@
  */
 
 import { logger } from '../../logger';
-import { submitUpdate } from '../../airtable';
+import { submitUpdate } from '../../database';
 import { ROLE_EMAILS, SOURCE_TYPE, CHILD_UPDATE_STATUS, UPDATE_TYPES } from '../../constants';
 import type {
   ToolResult,

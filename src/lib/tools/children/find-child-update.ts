@@ -11,7 +11,7 @@
  */
 
 import { logger } from '../../logger';
-import { findUpdatesForChild, findPendingUpdates, findAllPublishedUpdates } from '../../airtable';
+import { findUpdatesForChild, findPendingUpdates, findAllPublishedUpdates } from '../../database';
 import type { ToolResult, SourceType, ChildUpdateStatus } from '../../types/child-update';
 import { SOURCE_TYPE, CHILD_UPDATE_STATUS } from '../../constants';
 

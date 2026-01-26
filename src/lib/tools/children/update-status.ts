@@ -14,8 +14,8 @@
  */
 
 import { logger } from '../../logger';
-import { getUpdateById, publishUpdate, rejectUpdate } from '../../airtable';
-import { airtableClient } from '../../airtable';
+import { getUpdateById, publishUpdate, rejectUpdate } from '../../database';
+import { airtableClient } from '../../database';
 import { ROLE_EMAILS, CHILD_UPDATE_STATUS, AIRTABLE_FIELDS, UPDATE_STATUS } from '../../constants';
 import type { ToolResult, ChildUpdateStatus, RoleActorEmail } from '../../types/child-update';
 import { getAirtableConfig } from '../../env';

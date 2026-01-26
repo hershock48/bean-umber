@@ -13,7 +13,7 @@
 
 import { logger } from '../../logger';
 import { ValidationResult, success, failure, validateRequiredString } from '../../validation';
-import { publishUpdate, getUpdateById, findSponsorshipBySponsorCode } from '../../airtable';
+import { publishUpdate, getUpdateById, findSponsorshipBySponsorCode } from '../../database';
 import type { AirtableUpdateRecord, AirtableSponsorshipRecord } from '../../types/airtable';
 
 // ============================================================================

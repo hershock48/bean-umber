@@ -7,7 +7,7 @@
 
 import { logger } from '../../logger';
 import { ValidationResult, success, failure } from '../../validation';
-import { findAvailableChildren, sponsorshipToChildProfile } from '../../airtable';
+import { findAvailableChildren, sponsorshipToChildProfile } from '../../database';
 import type { ChildProfile } from '../../types/airtable';
 
 // ============================================================================

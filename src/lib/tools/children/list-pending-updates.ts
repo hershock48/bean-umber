@@ -10,7 +10,7 @@
  */
 
 import { logger } from '../../logger';
-import { findPendingUpdates } from '../../airtable';
+import { findPendingUpdates } from '../../database';
 import { SOURCE_TYPE, CHILD_UPDATE_STATUS, UPDATE_TYPES } from '../../constants';
 import type {
   ToolResult,

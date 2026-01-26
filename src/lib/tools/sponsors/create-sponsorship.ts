@@ -7,7 +7,7 @@
 
 import { logger } from '../../logger';
 import { ValidationResult, success, failure } from '../../validation';
-import { assignSponsorToChild, getSponsorshipById } from '../../airtable';
+import { assignSponsorToChild, getSponsorshipById } from '../../database';
 import { VALIDATION, SPONSOR_CODE_PATTERN, SPONSORSHIP_STATUS } from '../../constants';
 
 // ============================================================================

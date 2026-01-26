@@ -13,7 +13,7 @@
 import { logger } from '../../logger';
 import { ValidationResult, success, failure, validateEmail } from '../../validation';
 import { sendEmail, EmailSendResult } from '../../email';
-import { findPendingUpdates, findAllActiveSponsorships, findAllPublishedUpdates } from '../../airtable';
+import { findPendingUpdates, findAllActiveSponsorships, findAllPublishedUpdates } from '../../database';
 import { listOverdueTool } from '../updates/list-overdue';
 
 // ============================================================================

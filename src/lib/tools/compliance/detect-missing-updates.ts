@@ -13,7 +13,7 @@
 
 import { logger } from '../../logger';
 import { getActiveChildrenTool } from '../children';
-import { findUpdatesForChild, findPendingUpdates } from '../../airtable';
+import { findUpdatesForChild, findPendingUpdates } from '../../database';
 import { SOURCE_TYPE, UPDATE_STATUS } from '../../constants';
 import type {
   ToolResult,

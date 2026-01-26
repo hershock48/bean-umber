@@ -12,7 +12,7 @@
 
 import { logger } from '../../logger';
 import { ValidationResult, success, failure } from '../../validation';
-import { findAllActiveSponsorships, findAllPublishedUpdates } from '../../airtable';
+import { findAllActiveSponsorships, findAllPublishedUpdates } from '../../database';
 import type { AirtableSponsorshipRecord, AirtableUpdateRecord } from '../../types/airtable';
 
 // ============================================================================

@@ -5,7 +5,7 @@
 
 import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
-import { findSponsorshipByCode } from './airtable';
+import { findSponsorshipByCode } from './database';
 import { logger } from './logger';
 import { AuthenticationError } from './errors';
 import { SESSION, ERROR_MESSAGES } from './constants';

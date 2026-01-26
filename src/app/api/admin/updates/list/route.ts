@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findPendingUpdates } from '@/lib/airtable';
+import { findPendingUpdates } from '@/lib/database';
 import { logger } from '@/lib/logger';
 import {
   createSuccessResponse,

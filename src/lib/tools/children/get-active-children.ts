@@ -10,7 +10,7 @@
  */
 
 import { logger } from '../../logger';
-import { airtableClient, findAllActiveSponsorships } from '../../airtable';
+import { airtableClient, findAllActiveSponsorships } from '../../database';
 import type { ToolResult, ChildSummary, ChildStatus } from '../../types/child-update';
 import { CHILD_STATUS } from '../../constants';
 

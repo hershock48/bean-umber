@@ -4,13 +4,10 @@
  */
 
 interface EnvironmentVariables {
-  // Airtable
-  AIRTABLE_API_KEY: string;
-  AIRTABLE_BASE_ID: string;
-  AIRTABLE_SPONSORSHIPS_TABLE: string;
-  AIRTABLE_UPDATES_TABLE: string;
-  AIRTABLE_CHILDREN_TABLE?: string;
-  AIRTABLE_CHILD_UPDATES_TABLE?: string;
+  // Supabase
+  NEXT_PUBLIC_SUPABASE_URL: string;
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
 
   // Stripe (optional until configured)
   STRIPE_SECRET_KEY?: string;
@@ -45,16 +42,9 @@ class EnvironmentError extends Error {
  */
 function validateEnvironment(): EnvironmentVariables {
   const requiredVars = [
-    'AIRTABLE_API_KEY',
-    'AIRTABLE_BASE_ID',
-    'AIRTABLE_SPONSORSHIPS_TABLE',
-    'AIRTABLE_UPDATES_TABLE',
-  ] as const;
-  
-  // Optional new tables (for Child Update System)
-  const optionalAirtableVars = [
-    'AIRTABLE_CHILDREN_TABLE',
-    'AIRTABLE_CHILD_UPDATES_TABLE',
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'SUPABASE_SERVICE_ROLE_KEY',
   ] as const;
 
   const missing: string[] = [];
@@ -89,12 +79,9 @@ function validateEnvironment(): EnvironmentVariables {
   }
 
   return {
-    AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY!,
-    AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID!,
-    AIRTABLE_SPONSORSHIPS_TABLE: process.env.AIRTABLE_SPONSORSHIPS_TABLE!,
-    AIRTABLE_UPDATES_TABLE: process.env.AIRTABLE_UPDATES_TABLE!,
-    AIRTABLE_CHILDREN_TABLE: process.env.AIRTABLE_CHILDREN_TABLE,
-    AIRTABLE_CHILD_UPDATES_TABLE: process.env.AIRTABLE_CHILD_UPDATES_TABLE,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY!,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
@@ -150,18 +137,31 @@ export function hasEnv(key: keyof EnvironmentVariables): boolean {
 }
 
 /**
- * Get Airtable configuration
+ * Get Supabase configuration
  */
-export function getAirtableConfig() {
+export function getSupabaseConfig() {
   const envVars = getEnv();
   return {
-    apiKey: envVars.AIRTABLE_API_KEY,
-    baseId: envVars.AIRTABLE_BASE_ID,
+    url: envVars.NEXT_PUBLIC_SUPABASE_URL,
+    anonKey: envVars.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceRoleKey: envVars.SUPABASE_SERVICE_ROLE_KEY,
+  };
+}
+
+/**
+ * @deprecated Use getSupabaseConfig() instead
+ * Kept for backward compatibility during migration
+ */
+export function getAirtableConfig() {
+  console.warn('getAirtableConfig() is deprecated. Use getSupabaseConfig() instead.');
+  return {
+    apiKey: 'deprecated',
+    baseId: 'deprecated',
     tables: {
-      sponsorships: envVars.AIRTABLE_SPONSORSHIPS_TABLE,
-      updates: envVars.AIRTABLE_UPDATES_TABLE,
-      children: envVars.AIRTABLE_CHILDREN_TABLE,
-      childUpdates: envVars.AIRTABLE_CHILD_UPDATES_TABLE,
+      sponsorships: 'sponsorships',
+      updates: 'updates',
+      children: 'children',
+      childUpdates: 'child_updates',
     },
   };
 }

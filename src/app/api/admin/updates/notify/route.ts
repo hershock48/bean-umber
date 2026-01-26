@@ -13,7 +13,7 @@ import {
 import { requireAdminAuth } from '@/lib/auth';
 import { parseRequestBody } from '@/lib/validation';
 import { sendUpdateNotificationTool } from '@/lib/tools';
-import { getUpdateById, findSponsorshipBySponsorCode } from '@/lib/airtable';
+import { getUpdateById, findSponsorshipBySponsorCode } from '@/lib/database';
 
 async function handler(request: NextRequest): Promise<NextResponse> {
   const method = 'POST';
