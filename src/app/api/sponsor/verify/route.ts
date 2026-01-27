@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { checkLoginRateLimit } from '@/lib/rate-limit';
+import { 
+  validateEmail, 
+  validateSponsorCode, 
+  escapeForAirtable 
+} from '@/lib/validation';
+import { ERROR_MESSAGES } from '@/lib/constants';
 
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
@@ -20,11 +27,15 @@ async function verifySponsor(email: string, sponsorCode: string): Promise<Sponso
     throw new Error('Airtable credentials not configured');
   }
 
+  // Escape inputs for safe use in Airtable formula
+  const escapedEmail = escapeForAirtable(email);
+  const escapedCode = escapeForAirtable(sponsorCode);
+
   // Search for sponsor by email and sponsor code with all checks in formula
   // Airtable checkbox = 1 for true, 0 for false
-  const formula = `AND({SponsorEmail}="${email}",{SponsorCode}="${sponsorCode}",{AuthStatus}="Active",{VisibleToSponsor}=1)`;
+  const formula = `AND({SponsorEmail}="${escapedEmail}",{SponsorCode}="${escapedCode}",{AuthStatus}="Active",{VisibleToSponsor}=1)`;
   
-  console.log('[Verify] Airtable query:', formula);
+  console.log('[Verify] Airtable query with sanitized inputs');
   
   const response = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_SPONSORSHIPS_TABLE}?filterByFormula=${encodeURIComponent(formula)}`,
@@ -79,19 +90,47 @@ async function verifySponsor(email: string, sponsorCode: string): Promise<Sponso
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, sponsorCode } = await request.json();
-
-    if (!email || !sponsorCode) {
+    // Check rate limit first
+    const rateLimitError = checkLoginRateLimit(request);
+    if (rateLimitError) {
       return NextResponse.json(
-        { error: 'Email and sponsor code are required' },
+        { error: ERROR_MESSAGES.TOO_MANY_REQUESTS },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitError.retryAfter?.toString() || '60',
+          },
+        }
+      );
+    }
+
+    const body = await request.json();
+    
+    // Validate and sanitize inputs using the existing validation module
+    const emailValidation = validateEmail(body.email);
+    if (!emailValidation.success) {
+      return NextResponse.json(
+        { error: emailValidation.error },
         { status: 400 }
       );
     }
 
-    // Verify sponsor
+    const codeValidation = validateSponsorCode(body.sponsorCode);
+    if (!codeValidation.success) {
+      return NextResponse.json(
+        { error: codeValidation.error },
+        { status: 400 }
+      );
+    }
+
+    const email = emailValidation.data!;
+    const sponsorCode = codeValidation.data!;
+
+    // Verify sponsor with sanitized inputs
     const sponsor = await verifySponsor(email, sponsorCode);
 
     if (!sponsor) {
+      // Use generic error message to prevent enumeration attacks
       return NextResponse.json(
         { error: 'Invalid email or sponsor code, or sponsorship is not active' },
         { status: 401 }
@@ -130,10 +169,11 @@ export async function POST(request: NextRequest) {
       sponsorCode: sponsor.sponsorCode,
       name: sponsor.name,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Sponsor Verify] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to verify sponsor';
     return NextResponse.json(
-      { error: error.message || 'Failed to verify sponsor' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

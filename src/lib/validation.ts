@@ -24,7 +24,7 @@ export function failure<T = never>(error: string): ValidationResult<T> {
 }
 
 // ============================================================================
-// STRING VALIDATION
+// STRING VALIDATION & SANITIZATION
 // ============================================================================
 
 /**
@@ -35,6 +35,49 @@ export function sanitizeString(input: unknown): string {
     return '';
   }
   return input.trim().replace(/\0/g, '');
+}
+
+/**
+ * Escape string for safe use in Airtable formulas
+ * Prevents formula injection attacks
+ */
+export function escapeForAirtable(input: string): string {
+  // Airtable formulas use double quotes for strings
+  // Escape quotes, backslashes, and control characters
+  return input
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+}
+
+/**
+ * Sanitize email for safe use in queries
+ * Only allows valid email characters to prevent injection
+ */
+export function sanitizeEmail(input: unknown): string {
+  const sanitized = sanitizeString(input);
+  
+  // Only allow characters valid in email addresses
+  // This prevents injection in Airtable formulas and SQL-like contexts
+  return sanitized
+    .toLowerCase()
+    .replace(/[^a-z0-9._%+\-@]/g, '')
+    .slice(0, 254); // Max email length per RFC
+}
+
+/**
+ * Sanitize sponsor code - only allows expected format characters
+ */
+export function sanitizeSponsorCode(input: unknown): string {
+  const sanitized = sanitizeString(input);
+  
+  // Only allow alphanumeric and hyphens
+  return sanitized
+    .toUpperCase()
+    .replace(/[^A-Z0-9\-]/g, '')
+    .slice(0, 12); // Max length: BAN-YYYY-XXX = 12 chars
 }
 
 /**

@@ -1,31 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import { verifyAdminToken } from '@/lib/auth';
+import { checkUpdateSubmissionRateLimit } from '@/lib/rate-limit';
+import { 
+  validateSponsorCode, 
+  validateUpdateTitle, 
+  validateUpdateContent,
+  validateRequiredString,
+  sanitizeString,
+  escapeForAirtable 
+} from '@/lib/validation';
+import { ERROR_MESSAGES } from '@/lib/constants';
 
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 const AIRTABLE_SPONSORSHIPS_TABLE = process.env.AIRTABLE_SPONSORSHIPS_TABLE || 'Sponsorships';
 const AIRTABLE_UPDATES_TABLE = process.env.AIRTABLE_UPDATES_TABLE || 'Updates';
 
-export async function POST(request: NextRequest) {
+/**
+ * Verify form-submitted token using timing-safe comparison
+ */
+function verifyFormToken(token: string | null): boolean {
+  if (!token) return false;
+  
+  const expectedToken = process.env.ADMIN_API_TOKEN;
+  if (!expectedToken) return false;
+  
   try {
-    const formData = await request.formData();
+    const tokenBuffer = Buffer.from(token, 'utf8');
+    const expectedBuffer = Buffer.from(expectedToken, 'utf8');
     
-    // Authentication check
-    const adminPassword = formData.get('adminPassword') as string;
-    const adminToken = request.headers.get('Authorization')?.replace('Bearer ', '') || 
-                      request.headers.get('X-Admin-Token') || 
-                      adminPassword ||
-                      null;
-    const expectedToken = process.env.ADMIN_API_TOKEN;
-    
-    if (!expectedToken) {
-      console.error('[Admin Submit] ADMIN_API_TOKEN not configured');
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
+    if (tokenBuffer.length !== expectedBuffer.length) {
+      // Do a comparison anyway to maintain constant time
+      timingSafeEqual(tokenBuffer, tokenBuffer);
+      return false;
     }
     
-    if (!adminToken || adminToken !== expectedToken) {
+    return timingSafeEqual(tokenBuffer, expectedBuffer);
+  } catch {
+    return false;
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Check rate limit first
+    const rateLimitError = checkUpdateSubmissionRateLimit(request);
+    if (rateLimitError) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.TOO_MANY_REQUESTS },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitError.retryAfter?.toString() || '60',
+          },
+        }
+      );
+    }
+
+    const formData = await request.formData();
+    
+    // Authentication check using timing-safe comparison
+    const adminPassword = formData.get('adminPassword') as string;
+    
+    // Verify token - try both header and form-based auth
+    if (!verifyAdminToken(request) && !verifyFormToken(adminPassword)) {
       console.warn('[Admin Submit] Unauthorized access attempt');
       return NextResponse.json(
         { error: 'Unauthorized - Invalid admin password' },
@@ -33,33 +72,60 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const sponsorCode = formData.get('sponsorCode') as string;
-    const updateType = formData.get('updateType') as string;
-    const title = formData.get('title') as string;
-    const content = formData.get('content') as string;
-    const submittedBy = formData.get('submittedBy') as string;
-    const photos = formData.getAll('photos') as File[];
+    // Extract and validate form fields
+    const sponsorCodeRaw = formData.get('sponsorCode') as string;
+    const updateType = sanitizeString(formData.get('updateType')).slice(0, 100);
+    const titleRaw = formData.get('title') as string;
+    const contentRaw = formData.get('content') as string;
+    const submittedByRaw = formData.get('submittedBy') as string;
 
-    if (!sponsorCode || !title || !content || !submittedBy) {
+    // Validate sponsor code
+    const codeValidation = validateSponsorCode(sponsorCodeRaw);
+    if (!codeValidation.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: codeValidation.error },
         { status: 400 }
       );
     }
+    const sponsorCode = codeValidation.data!;
+
+    // Validate title
+    const titleValidation = validateUpdateTitle(titleRaw);
+    if (!titleValidation.success) {
+      return NextResponse.json(
+        { error: titleValidation.error },
+        { status: 400 }
+      );
+    }
+    const title = titleValidation.data!;
+
+    // Validate content
+    const contentValidation = validateUpdateContent(contentRaw);
+    if (!contentValidation.success) {
+      return NextResponse.json(
+        { error: contentValidation.error },
+        { status: 400 }
+      );
+    }
+    const content = contentValidation.data!;
+
+    // Validate submittedBy
+    const submittedByValidation = validateRequiredString(submittedByRaw, 'Submitted by', 1, 200);
+    if (!submittedByValidation.success) {
+      return NextResponse.json(
+        { error: submittedByValidation.error },
+        { status: 400 }
+      );
+    }
+    const submittedBy = submittedByValidation.data!;
 
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable credentials not configured');
     }
 
-    // Upload photos to Airtable (convert to base64 or use Airtable's attachment API)
-    const photoAttachments: any[] = [];
-    
-    // Note: Airtable attachments need to be uploaded separately or converted to URLs
-    // For now, we'll store photo metadata and you can upload manually or use a file storage service
-    // In production, you'd want to upload to S3/Cloudinary/etc. and store URLs
-
-    // Get ChildID from Sponsorships table
-    const sponsorshipFormula = `{SponsorCode} = "${sponsorCode}"`;
+    // Get ChildID from Sponsorships table with escaped input
+    const escapedCode = escapeForAirtable(sponsorCode);
+    const sponsorshipFormula = `{SponsorCode} = "${escapedCode}"`;
     const sponsorshipResponse = await fetch(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_SPONSORSHIPS_TABLE}?filterByFormula=${encodeURIComponent(sponsorshipFormula)}&maxRecords=1`,
       {
@@ -87,10 +153,10 @@ export async function POST(request: NextRequest) {
 
     // Create update record in Airtable
     const now = new Date().toISOString();
-    const fields: any = {
+    const fields: Record<string, unknown> = {
       'ChildID': childID,
       'SponsorCode': sponsorCode,
-      'UpdateType': updateType,
+      'UpdateType': updateType || 'Progress Report',
       'Title': title,
       'Content': content,
       'Status': 'Pending Review',
@@ -99,9 +165,6 @@ export async function POST(request: NextRequest) {
       'RequestedAt': now,
       'SubmittedBy': submittedBy,
     };
-
-    // If you have photo URLs, add them here
-    // For now, photos will need to be added manually in Airtable or via a file upload service
 
     const response = await fetch(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_UPDATES_TABLE}`,
@@ -124,18 +187,16 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
 
-    // TODO: Upload photos to file storage and update record with photo URLs
-    // For now, field team can add photos manually in Airtable after submission
-
     return NextResponse.json({
       success: true,
       updateId: data.id,
       message: 'Update submitted successfully. Photos can be added in Airtable.',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Submit Update] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to submit update';
     return NextResponse.json(
-      { error: error.message || 'Failed to submit update' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

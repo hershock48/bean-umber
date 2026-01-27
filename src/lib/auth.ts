@@ -5,11 +5,39 @@
 
 import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
+import { timingSafeEqual } from 'crypto';
 import { findSponsorshipByCode } from './database';
 import { logger } from './logger';
 import { AuthenticationError } from './errors';
 import { SESSION, ERROR_MESSAGES } from './constants';
 import type { AirtableSponsorshipRecord } from './types/airtable';
+
+// ============================================================================
+// SECURITY UTILITIES
+// ============================================================================
+
+/**
+ * Timing-safe string comparison to prevent timing attacks
+ * Returns true if strings are equal, false otherwise
+ */
+function timingSafeCompare(a: string, b: string): boolean {
+  try {
+    // Ensure both strings are the same length to prevent length-based timing attacks
+    const bufferA = Buffer.from(a, 'utf8');
+    const bufferB = Buffer.from(b, 'utf8');
+    
+    // If lengths differ, still do comparison with equal-length buffers to prevent timing leak
+    if (bufferA.length !== bufferB.length) {
+      // Compare bufferA against itself to maintain constant time
+      timingSafeEqual(bufferA, bufferA);
+      return false;
+    }
+    
+    return timingSafeEqual(bufferA, bufferB);
+  } catch {
+    return false;
+  }
+}
 
 // ============================================================================
 // SESSION MANAGEMENT
@@ -120,7 +148,8 @@ export async function clearSession(): Promise<void> {
 // ============================================================================
 
 /**
- * Verify admin authentication token
+ * Verify admin authentication token using timing-safe comparison
+ * Prevents timing attacks that could leak token information
  */
 export function verifyAdminToken(request: NextRequest): boolean {
   const adminToken = process.env.ADMIN_API_TOKEN;
@@ -130,14 +159,19 @@ export function verifyAdminToken(request: NextRequest): boolean {
     return false;
   }
 
-  const requestToken = request.headers.get('X-Admin-Token');
+  // Support multiple header formats for flexibility
+  const requestToken = 
+    request.headers.get('X-Admin-Token') ||
+    request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ||
+    null;
 
   if (!requestToken) {
     logger.auth('admin_auth_missing_token', false);
     return false;
   }
 
-  const isValid = requestToken === adminToken;
+  // Use timing-safe comparison to prevent timing attacks
+  const isValid = timingSafeCompare(requestToken, adminToken);
 
   logger.auth('admin_auth_attempt', isValid);
 
